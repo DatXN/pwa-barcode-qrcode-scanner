@@ -1,28 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Quagga from "quagga";
-
-//import { withRouter } from 'react-router';
-
-import BarcodeInputField from "../barcodeInputField";
-
 import VideoSkeleton from "./Video.skeleton";
-
 import "./video.css";
+import { AppCodeContext } from "../../app-code-context";
 
-const Video = ({ history }) => {
+const Video = (props) => {
+  const appCodeContext = React.useContext(AppCodeContext);
+
   const [videoInit, setVideoInit] = useState(false);
   const [videoError, setVideoError] = useState(false);
-  const [attempts, setAttempts] = useState(0);
-  const [barcode, setBarcode] = useState(null);
-
-  const onProductFound = (code) => {
-    Quagga.stop();
-    if (code === "not-found") {
-      history.push(`/product/${code}?code=${barcode}`);
-    } else {
-      history.push(`/product/${code}`);
-    }
-  };
 
   const onInitSuccess = () => {
     Quagga.start();
@@ -31,24 +17,9 @@ const Video = ({ history }) => {
 
   const onDetected = (result) => {
     Quagga.offDetected(onDetected);
-    fetch(
-      `https://world.openfoodfacts.org/api/v0/product/${result.codeResult.code}.json`
-    )
-      .then((res) => res.json())
-      // eslint-disable-next-line no-use-before-define
-      .then((res) => onInfoFetched(res));
-  };
-
-  const onInfoFetched = (res) => {
-    const { status, code } = res;
-    setBarcode(code);
-    setAttempts((prevState) => prevState + 1);
-
-    if (status === 1) {
-      onProductFound(code);
-    } else {
-      Quagga.onDetected(onDetected);
-    }
+    appCodeContext.setCode(result.codeResult.code);
+    console.log(result);
+    Quagga.onDetected(onDetected);
   };
 
   useEffect(() => {
@@ -60,7 +31,7 @@ const Video = ({ history }) => {
             type: "LiveStream",
             target: document.querySelector("#video"),
           },
-          numOfWorkers: 1,
+          numOfWorkers: 4,
           locate: true,
           decoder: {
             readers: [
@@ -69,7 +40,14 @@ const Video = ({ history }) => {
               "upc_reader",
               "code_128_reader",
             ],
+            debug: {
+              drawBoundingBox: true,
+              showFrequency: true,
+              drawScanline: true,
+              showPattern: true,
+            },
           },
+          debug: true,
         },
         (err) => {
           if (err) {
@@ -82,12 +60,6 @@ const Video = ({ history }) => {
       Quagga.onDetected(onDetected);
     }
   }, []);
-
-  useEffect(() => {
-    if (attempts > 3) {
-      onProductFound("not-found");
-    }
-  }, [attempts]);
 
   return (
     <div>

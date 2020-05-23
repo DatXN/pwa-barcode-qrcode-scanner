@@ -2,7 +2,6 @@ import React, { lazy, Suspense, useState, useEffect } from "react";
 
 import dataHandler from "../dataHandler";
 
-import BarcodeInputField from "../barcodeInputField";
 import { Button, Card } from "antd";
 
 import "./cameraHandler.css";
