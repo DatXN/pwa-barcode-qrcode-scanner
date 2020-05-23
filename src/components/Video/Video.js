@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Button } from "antd";
 import Quagga from "quagga";
 import VideoSkeleton from "./Video.skeleton";
 import "./video.css";
@@ -17,9 +18,57 @@ const Video = (props) => {
 
   const onDetected = (result) => {
     Quagga.offDetected(onDetected);
+    Quagga.offProcessed(onProcessed);
     appCodeContext.setCode(result.codeResult.code);
-    console.log(result);
+    appCodeContext.setType(result.codeResult.format);
+  };
+
+  const resetScanClick = () => {
+    appCodeContext.setCode("");
+    appCodeContext.setType("");
     Quagga.onDetected(onDetected);
+    Quagga.onProcessed(onProcessed);
+  };
+  const onProcessed = (result) => {
+    var drawingCtx = Quagga.canvas.ctx.overlay,
+      drawingCanvas = Quagga.canvas.dom.overlay;
+
+    if (result) {
+      if (result.boxes) {
+        drawingCtx.clearRect(
+          0,
+          0,
+          parseInt(drawingCanvas.getAttribute("width")),
+          parseInt(drawingCanvas.getAttribute("height"))
+        );
+        result.boxes
+          .filter(function (box) {
+            return box !== result.box;
+          })
+          .forEach(function (box) {
+            Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, {
+              color: "green",
+              lineWidth: 2,
+            });
+          });
+      }
+
+      if (result.box) {
+        Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, drawingCtx, {
+          color: "#00F",
+          lineWidth: 2,
+        });
+      }
+
+      if (result.codeResult && result.codeResult.code) {
+        Quagga.ImageDebug.drawPath(
+          result.line,
+          { x: "x", y: "y" },
+          drawingCtx,
+          { color: "red", lineWidth: 3 }
+        );
+      }
+    }
   };
 
   useEffect(() => {
@@ -39,17 +88,8 @@ const Video = (props) => {
           },
           decoder: {
             readers: [
-              "ean_reader",
-              "ean_8_reader",
-              "upc_reader",
-              "code_128_reader",
+              "ean_reader", //ean-13 only
             ],
-            debug: {
-              drawBoundingBox: true,
-              showFrequency: true,
-              drawScanline: true,
-              showPattern: true,
-            },
           },
         },
         (err) => {
@@ -61,49 +101,7 @@ const Video = (props) => {
         }
       );
       Quagga.onDetected(onDetected);
-      Quagga.onProcessed(function (result) {
-        var drawingCtx = Quagga.canvas.ctx.overlay,
-          drawingCanvas = Quagga.canvas.dom.overlay;
-
-        if (result) {
-          if (result.boxes) {
-            console.log(drawingCtx);
-
-            drawingCtx.clearRect(
-              0,
-              0,
-              parseInt(drawingCanvas.getAttribute("width")),
-              parseInt(drawingCanvas.getAttribute("height"))
-            );
-            result.boxes
-              .filter(function (box) {
-                return box !== result.box;
-              })
-              .forEach(function (box) {
-                Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, {
-                  color: "green",
-                  lineWidth: 2,
-                });
-              });
-          }
-
-          if (result.box) {
-            Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, drawingCtx, {
-              color: "#00F",
-              lineWidth: 2,
-            });
-          }
-
-          if (result.codeResult && result.codeResult.code) {
-            Quagga.ImageDebug.drawPath(
-              result.line,
-              { x: "x", y: "y" },
-              drawingCtx,
-              { color: "red", lineWidth: 3 }
-            );
-          }
-        }
-      });
+      Quagga.onProcessed(onProcessed);
     }
   }, []);
 
@@ -127,6 +125,16 @@ const Video = (props) => {
           <div>
             <div className="video" id="video" />
             {videoInit ? "" : <VideoSkeleton />}
+            <div style={{ textAlign: "center" }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={resetScanClick}
+                style={{ marginTop: 10 }}
+              >
+                Re-Scan
+              </Button>
+            </div>
           </div>
         )}
       </div>

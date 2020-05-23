@@ -32,16 +32,19 @@ const tailLayout = {
 
 const App = () => {
   const [code, setCodeData] = useState("");
-  const setCode = (code) => {
-    console.log(code);
-    setCodeData(code);
+  const [type, setTypeData] = useState("");
+  const setCode = (value) => {
+    setCodeData(value);
+  };
+  const setType = (value) => {
+    setTypeData(value);
   };
   const handleOnClick = (e) => {
     console.log(e);
   };
   return (
     <div>
-      <AppCodeContext.Provider value={{ code, setCode }}>
+      <AppCodeContext.Provider value={{ code, setCode, type, setType }}>
         <Layout style={{ height: "100vh" }}>
           <Sider
             breakpoint="lg"
@@ -93,9 +96,11 @@ const App = () => {
               >
                 <CameraHandler />
                 <div style={{ padding: 24, textAlign: "center" }}>
+                  <Input prefix="Code:" value={code} />
                   <Input
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
+                    prefix="Type:"
+                    value={type}
+                    style={{ marginTop: 10 }}
                   />
                   <Button
                     type="primary"
