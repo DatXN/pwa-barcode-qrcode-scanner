@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Form,
   Select,
@@ -11,68 +11,108 @@ import {
   Typography,
   Space,
   Divider,
-} from 'antd';
-import './App.less';
+  Layout,
+  Menu,
+  Input,
+  Checkbox,
+} from "antd";
+import "./App.less";
+import {
+  UploadOutlined,
+  UserOutlined,
+  VideoCameraOutlined,
+} from "@ant-design/icons";
+import CameraHandler from "./components/cameraHandler";
 
 const { Option } = Select;
 const { Title } = Typography;
+const { Header, Content, Footer, Sider } = Layout;
+
+const layout = {
+  labelCol: { span: 4 },
+  wrapperCol: { span: 16 },
+};
+const tailLayout = {
+  wrapperCol: { span: 20 },
+};
 
 const App = () => (
-  <>
-    <section style={{ textAlign: 'center', marginTop: 48, marginBottom: 40 }}>
-      <Space align="start">
-        <img
-          style={{width: 40, height: 40 }}
-          src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
-          alt="Ant Design"
+  <div className="App">
+    <Layout style={{ height: "100vh" }}>
+      <Sider
+        breakpoint="lg"
+        collapsedWidth="0"
+        onBreakpoint={(broken) => {
+          console.log(broken);
+        }}
+        onCollapse={(collapsed, type) => {
+          console.log(collapsed, type);
+        }}
+      >
+        <section style={{ textAlign: "center", margin: 16 }}>
+          <Space align="start">
+            <img
+              style={{ width: 32, height: 32 }}
+              src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
+              alt="Ant Design"
+            />
+            <Title level={3} style={{ marginBottom: 0, color: "#fff" }}>
+              DatXN
+            </Title>
+          </Space>
+        </section>
+        <Menu theme="dark" mode="inline" defaultSelectedKeys={["2"]}>
+          <Menu.Item key="1" icon={<UserOutlined />}>
+            nav 1
+          </Menu.Item>
+          <Menu.Item key="2" icon={<VideoCameraOutlined />}>
+            nav 2
+          </Menu.Item>
+          <Menu.Item key="3" icon={<UploadOutlined />}>
+            nav 3
+          </Menu.Item>
+          <Menu.Item key="4" icon={<UserOutlined />}>
+            nav 4
+          </Menu.Item>
+        </Menu>
+      </Sider>
+      <Layout>
+        <Header
+          className="site-layout-sub-header-background"
+          style={{ padding: 0 }}
         />
-        <Title level={2} style={{ marginBottom: 0 }}>
-          Ant Design
-        </Title>
-      </Space>
-    </section>
-    <Divider style={{ marginBottom: 60 }}>Form</Divider>
-    <Form labelCol={{ span: 8 }} wrapperCol={{ span: 8 }}>
-      <Form.Item label="数字输入框">
-        <InputNumber min={1} max={10} defaultValue={3} />
-        <span className="ant-form-text"> 台机器</span>
-        <a href="https://ant.design">链接文字</a>
-      </Form.Item>
-      <Form.Item label="开关">
-        <Switch defaultChecked />
-      </Form.Item>
-      <Form.Item label="滑动输入条">
-        <Slider defaultValue={70} />
-      </Form.Item>
-      <Form.Item label="选择器">
-        <Select defaultValue="lucy" style={{ width: 192 }}>
-          <Option value="jack">jack</Option>
-          <Option value="lucy">lucy</Option>
-          <Option value="disabled" disabled>disabled</Option>
-          <Option value="yiminghe">yiminghe</Option>
-        </Select>
-      </Form.Item>
-      <Form.Item label="日期选择框">
-        <DatePicker />
-      </Form.Item>
-      <Form.Item label="日期范围选择框">
-        <DatePicker.RangePicker />
-      </Form.Item>
-      <Form.Item label="评分">
-        <Rate defaultValue={5} />
-      </Form.Item>
-      <Form.Item wrapperCol={{ span: 8, offset: 8 }}>
-        <Space>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-          <Button>
-            Cancel
-          </Button>
-        </Space>
-      </Form.Item>
-    </Form>
-  </>
+
+        <Content style={{ margin: "0px 16px 0" }}>
+          <div
+            className="site-layout-background"
+            style={{ padding: 24, minHeight: 360 }}
+          >
+            <CameraHandler />
+            <Form
+              {...layout}
+              name="basic"
+              initialValues={{
+                remember: true,
+              }}
+            >
+              <Form.Item label="Barcode Value" name="barcodeValue">
+                <Input />
+              </Form.Item>
+
+              <Form.Item {...tailLayout}>
+                <Button type="primary" htmlType="submit">
+                  Submit
+                </Button>
+              </Form.Item>
+            </Form>
+          </div>
+        </Content>
+        <Footer style={{ textAlign: "center" }}>
+          Scanner Prototype ©2020 Created by DatXN
+        </Footer>
+      </Layout>
+    </Layout>
+  </div>
 );
 
 export default App;
