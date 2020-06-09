@@ -18,6 +18,7 @@ const CameraHandler = () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       setCameraSupported(true);
     }
+    console.log("did mounted");
   }, []);
 
   const onCamEnabled = () => {
