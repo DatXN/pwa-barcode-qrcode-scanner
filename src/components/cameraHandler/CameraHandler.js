@@ -2,7 +2,7 @@ import React, { lazy, Suspense, useState, useEffect } from "react";
 
 import dataHandler from "../dataHandler";
 
-import { Button, Card } from "antd";
+import { Button } from "antd";
 
 import "./cameraHandler.css";
 

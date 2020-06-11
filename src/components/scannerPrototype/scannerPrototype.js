@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Input, Tabs } from "antd";
+import { Tabs } from "antd";
 import CameraHandler from "../cameraHandler/CameraHandler";
 import ScannerOutputPanel from "../scannerOutputPanel/scannerOutputPanel";
 

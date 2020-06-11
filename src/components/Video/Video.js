@@ -103,6 +103,7 @@ const Video = (props) => {
       Quagga.onDetected(onDetected);
       Quagga.onProcessed(onProcessed);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
