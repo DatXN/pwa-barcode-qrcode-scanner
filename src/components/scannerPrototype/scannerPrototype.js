@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Tabs } from "antd";
 import CameraHandler from "../cameraHandler/CameraHandler";
+import DxQrReader from "../qrReader/qrReader";
 import ScannerOutputPanel from "../scannerOutputPanel/scannerOutputPanel";
 
 import { AppCodeContext } from "../../app-code-context";
@@ -48,13 +49,7 @@ const ScannerPrototype = () => {
             }
             key="2"
           >
-            {activeTabKey === 2 ? (
-              <>
-                <p>Content of Tab Pane 2</p>
-                <p>Content of Tab Pane 2</p>
-                <p>Content of Tab Pane 2</p>
-              </>
-            ) : null}
+            {activeTabKey === 2 ? <DxQrReader /> : null}
           </TabPane>
         </Tabs>
         <ScannerOutputPanel

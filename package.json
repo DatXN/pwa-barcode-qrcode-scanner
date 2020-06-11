@@ -12,6 +12,7 @@
     "quagga": "^0.12.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-qr-reader": "^2.2.1",
     "react-scripts": "3.4.1"
   },
   "scripts": {
